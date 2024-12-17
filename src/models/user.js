@@ -51,6 +51,21 @@ const Userschema = new mongoose.Schema({
         required: true,
     },
 
+    image: {
+        type: String,
+        trim: true
+    },
+
+    city: {
+        type: String,
+        trim: true
+    },
+
+    bio: {
+        type: String,
+        trim: true
+    },
+
     isActive: {
         type: Boolean,
         default: true
