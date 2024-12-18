@@ -1,5 +1,6 @@
 {
-  "name": "server",
+  "title": "BlogAPP API",
+  "name": "blogapi",
   "version": "1.0.0",
   "description": "[Milestone Blog App - Frontend](https://milestone-blogapp-cw.vercel.app/)",
   "main": "index.js",
@@ -10,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Gokce",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.7",
