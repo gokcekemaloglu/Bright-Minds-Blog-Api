@@ -26,6 +26,11 @@ dbConnection()
 
 // Accept JSON:
 app.use(express.json())
+
+// res.getModelList():
+app.use(require('./src/middlewares/queryHandler'))
+
+
 /* ------------------------------------------------------- */
 
 
