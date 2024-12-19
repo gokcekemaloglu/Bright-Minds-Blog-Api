@@ -9,6 +9,10 @@ router.use("/users", require("./user"))
 router.use("/token", require("./token"))
 
 
+//category:
+router.use("/category", require("./category"))
+
+
 
 /* ------------------------------------------------------- */
 module.exports = router
