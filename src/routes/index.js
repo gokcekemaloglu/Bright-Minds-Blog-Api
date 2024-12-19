@@ -18,7 +18,5 @@ router.use("/category", require("./category"))
 //comment:
 router.use("/comment", require("./comment"))
 
-
-
 /* ------------------------------------------------------- */
 module.exports = router
