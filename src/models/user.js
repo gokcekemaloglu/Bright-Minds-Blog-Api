@@ -1,6 +1,7 @@
 "use strict"
 
 const {mongoose} = require("../configs/dbConnection")
+const passwordEncrypt = require("../helpers/passwordEncrypt")
 
 /* ------------------------------------------------------- *
 {
@@ -15,7 +16,7 @@ const {mongoose} = require("../configs/dbConnection")
 }
 /* ------------------------------------------------------- */
 
-const Userschema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
 
     username: {
         type: String,
@@ -87,4 +88,36 @@ const Userschema = new mongoose.Schema({
 
 /* ------------------------------------------------------- */
 
-module.exports = mongoose.model("User", Userschema)
+UserSchema.pre(["save", "updateOne"], function(next) {
+    // console.log("Pre-save run!")
+    // console.log(this)
+    
+    const data = this?._update ?? this
+
+    const isEmailValidated = data.email ? /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email) : true
+
+    if (!isEmailValidated) {
+        next(new Error("Email is not validated"))
+    }
+
+    const isPasswordValidated = data.password ? /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.]).{8,}$/.test(data.password) : true
+
+    if (!isPasswordValidated) {
+        next(new Error('Password must be at least 8 characters long and contain at least one special character and  at least one uppercase character.'))
+    }
+
+    if (data.password) {
+        if (this?._update) {
+            // Update password
+            this._update.password = passwordEncrypt(data.password)
+        } else {
+            // Create password
+            this.password = passwordEncrypt(data.password)
+        }
+    }
+    next()
+})
+
+/* ------------------------------------------------------- */
+
+module.exports = mongoose.model("User", UserSchema)
