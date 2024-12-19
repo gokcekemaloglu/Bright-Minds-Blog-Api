@@ -1,8 +1,7 @@
 "use strict"
-
+/* ------------------------------------------------------- */
 const {mongoose} = require("../configs/dbConnection")
 const passwordEncrypt = require("../helpers/passwordEncrypt")
-
 /* ------------------------------------------------------- *
 {
     "username": "admin",
@@ -15,7 +14,6 @@ const passwordEncrypt = require("../helpers/passwordEncrypt")
     "isAdmin": true
 }
 /* ------------------------------------------------------- */
-
 const UserSchema = new mongoose.Schema({
 
     username: {
@@ -94,11 +92,15 @@ UserSchema.pre(["save", "updateOne"], function(next) {
     
     const data = this?._update ?? this
 
+    // Email Validation Control
+
     const isEmailValidated = data.email ? /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email) : true
 
     if (!isEmailValidated) {
         next(new Error("Email is not validated"))
     }
+
+    // Password Validation Control
 
     const isPasswordValidated = data.password ? /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.]).{8,}$/.test(data.password) : true
 
@@ -117,7 +119,5 @@ UserSchema.pre(["save", "updateOne"], function(next) {
     }
     next()
 })
-
 /* ------------------------------------------------------- */
-
 module.exports = mongoose.model("User", UserSchema)
