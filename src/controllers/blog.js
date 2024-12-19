@@ -34,7 +34,7 @@ module.exports = {
                 }
             }
         */
-        res.status(200).send({
+        res.status(201).send({
             error: false,
             result
         })
@@ -61,7 +61,7 @@ module.exports = {
                 }
             }
         */
-        res.status(200).send({
+        res.status(202).send({
             error: false,
             result
         })
@@ -71,7 +71,7 @@ module.exports = {
             #swagger.tags = ["Blogs"]
             #swagger.summary = "Delete Blog"
         */
-        res.status(200).send({
+        res.status(204).send({
             error: false,
             result
         })
