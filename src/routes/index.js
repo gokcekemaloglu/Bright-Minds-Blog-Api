@@ -16,7 +16,7 @@ router.use("/blog", require("./blog"))
 //category:
 router.use("/category", require("./category"))
 //comment:
-// router.use("/comment", require("./comment"))
+router.use("/comment", require("./comment"))
 
 
 
