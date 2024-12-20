@@ -1,6 +1,8 @@
 "use strict"
 
+const passwordEncrypt = require("../helpers/passwordEncrypt")
 const User = require("../models/user")
+const jwt = require("jsonwebtoken")
 
 module.exports = {
     list: async(req, res) => {
@@ -17,9 +19,12 @@ module.exports = {
                 </ul>
             `
         */
+
+        const data = await res.getModelList(User)
         res.status(200).send({
             error: false,
-            result
+            details: await res.getModelListDetails(User),
+            data
         })
     },
     create: async(req, res) => {
@@ -38,9 +43,46 @@ module.exports = {
                 }
             }
         */
+        const user = await User.create(req.body)
+
+        // SIMPLE TOKEN
+
+        const tokenData = await Token.create({
+            userId: user._id,
+            token: passwordEncrypt(user._id + Date.now())
+        })
+
+        // JWT
+
+        // Access Token
+        const accessData = {
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+            isActive: user.isActive,
+            isAdmin: user.isAdmin
+        }
+        // Convert to JWT
+        const accessToken = jwt.sign(accessData, process.env.ACCESS_KEY, {expiresIn: "1d"})
+
+        // Refresh Token
+
+        const refreshData = {
+            _id: user._id,
+            password: user.password
+        }
+
+        // Convert to JWT
+        const refreshToken = jwt.sign(refreshData, process.env.REFRESH_KEY, {expiresIn: "3d"})
+
         res.status(200).send({
             error: false,
-            result
+            token: tokenData.token,
+            bearer: {
+                access: accessToken,
+                refresh: refreshToken
+            },
+            user
         })
     },
     read: async(req, res) => {
