@@ -4,7 +4,7 @@ const Category = require("../models/category")
 
 module.exports = {
     list: async (req, res) => {
-        /* 
+        /*
             #swagger.tags = ["Category"]
             #swagger.summary = "List Categories"
             #swagger.description = `

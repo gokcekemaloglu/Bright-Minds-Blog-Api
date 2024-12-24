@@ -17,8 +17,10 @@ module.exports = {
                 </ul>
             `
         */
+        const result = await res.getModelList(Blog, {}, ["userId", "categoryId"])
         res.status(200).send({
             error: false,
+            details: await res.getModelListDetails(Blog),
             result
         })
     },
@@ -34,6 +36,11 @@ module.exports = {
                 }
             }
         */
+        // Set userId from logged in user
+        console.log(req.user);
+        
+        req.body.userId = req.user._id
+        const result = await Blog.create(req.body)
         res.status(201).send({
             error: false,
             result
@@ -44,6 +51,7 @@ module.exports = {
             #swagger.tags = ["Blogs"]
             #swagger.summary = "Read Blog"
         */
+        const result = await Blog.findOne({_id: req.params.id}).populate(["userId", "categoryId"])
         res.status(200).send({
             error: false,
             result

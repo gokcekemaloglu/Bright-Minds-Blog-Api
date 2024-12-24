@@ -12,11 +12,11 @@ router.use("/token", require("./token"))
 
 
 //blog:
-router.use("/blog", require("./blog"))
-//category:
+router.use("/blogs", require("./blog"))
+//categories:
 router.use("/categories", require("./category"))
 //comment:
-router.use("/comment", require("./comment"))
+router.use("/comments", require("./comment"))
 
 /* ------------------------------------------------------- */
 module.exports = router
