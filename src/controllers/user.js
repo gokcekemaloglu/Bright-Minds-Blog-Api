@@ -1,6 +1,7 @@
 "use strict"
 
 const passwordEncrypt = require("../helpers/passwordEncrypt")
+const Token = require("../models/token")
 const User = require("../models/user")
 const jwt = require("jsonwebtoken")
 
@@ -90,9 +91,10 @@ module.exports = {
             #swagger.tags = ["Users"]
             #swagger.summary = "Read User"
         */
+        const data = await User.findOne({_id: req.params.id})
         res.status(200).send({
             error: false,
-            result
+            data
         })
     },
     update: async(req, res) => {
@@ -111,9 +113,11 @@ module.exports = {
                 }
             }
         */
+        const data = await User.updateOne({_id: req.params.id}, req.body, {runValidators: true})
         res.status(200).send({
             error: false,
-            result
+            data,
+            new: await User.findOne({_id: req.params.id})
         })
     },
     delete: async(req, res) => {
@@ -121,9 +125,10 @@ module.exports = {
             #swagger.tags = ["Users"]
             #swagger.summary = "Delete User"
         */
-        res.status(200).send({
-            error: false,
-            result
+        const data = await User.deleteOne({_id: req.params.id})
+        res.status(data.deletedCount ? 204 : 404).send({
+            error: !data.deletedCount,
+            data
         })
     },
 }
