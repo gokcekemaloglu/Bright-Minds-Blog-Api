@@ -109,7 +109,7 @@ module.exports = {
             throw new Error('JWT refresh Token is wrong.')
         }
         const user = await User.findOne({ _id: refreshData._id })
-        if (!(user && user.password === refreshData.password)) {
+        if (!(user && (user.password === refreshData.password))) {
             res.errorStatusCode = 401
             throw new Error('Wrong id or password.')
         }
@@ -144,14 +144,14 @@ module.exports = {
         if (tokenKey[0] == "Token") {
             const result = await Token.deleteOne({token: tokenKey[1]})
             res.send({
-                error: false,
+                error: !result.deletedCount,
                 message: "User's Token deleted",
                 result
             })
         } else if (tokenKey[0] == "Bearer") {            
             res.send({
                 error: false,
-                message: 'JWT: No need any process for logout. You can delete Tokens.'
+                message: 'JWT: No need any process for logout. It will expire sometime'
             })
         }
         }

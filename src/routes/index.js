@@ -14,7 +14,7 @@ router.use("/token", require("./token"))
 //blog:
 router.use("/blog", require("./blog"))
 //category:
-router.use("/category", require("./category"))
+router.use("/categories", require("./category"))
 //comment:
 router.use("/comment", require("./comment"))
 

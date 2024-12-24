@@ -44,6 +44,8 @@ module.exports = {
                 }
             }
         */
+
+        /* User is logged in when registered */
         const user = await User.create(req.body)
 
         // SIMPLE TOKEN
