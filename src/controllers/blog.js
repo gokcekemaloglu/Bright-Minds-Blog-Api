@@ -47,7 +47,7 @@ module.exports = {
         })
     },
     read: async(req, res) => {
-        /* 
+        /*
             #swagger.tags = ["Blogs"]
             #swagger.summary = "Read Blog"
         */
@@ -69,9 +69,20 @@ module.exports = {
                 }
             }
         */
+        const blogData = await Blog.findOne({_id: req.params.id}).populate("userId")
+        // console.log(blogData.userId._id);
+        // console.log(req.user);
+        //?? id neden olmadı?
+       
+        if (blogData.userId.username !== req.user.username) {
+            res.errorStatusCode = 401;
+            throw new Error("You cannot update someone else's blog post")
+        }
+        const result = await Blog.updateOne({_id: req.params.id}, req.body, {runValidators: true})
         res.status(202).send({
             error: false,
-            result
+            result,
+            new: await Blog.findOne({_id: req.params.id}) //.populate(["userId", "categoryId"])
         })
     },
     delete: async(req, res) => {
@@ -79,8 +90,20 @@ module.exports = {
             #swagger.tags = ["Blogs"]
             #swagger.summary = "Delete Blog"
         */
-        res.status(204).send({
-            error: false,
+        const blogData = await Blog.findOne({_id: req.params.id}).populate("userId")
+        // console.log(blogData.userId._id);
+        // console.log(req.user);
+        //?? id neden olmadı?
+       
+        if (blogData.userId.username !== req.user.username) {
+            res.errorStatusCode = 401;
+            throw new Error("You cannot delete someone else's blog post")
+        }
+
+        const result = await Blog.deleteOne({_id: req.params.id})
+        res.status(result.deletedCount ? 204 : 404).send({
+            error: !result.deletedCount,
+            message: "Blog deleted successfully!",
             result
         })
     },
