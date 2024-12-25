@@ -107,4 +107,17 @@ module.exports = {
             result
         })
     },
+    getLike: async(req, res) => {
+        
+        res.status(200).send({
+            error: false,
+            result
+        })
+    },
+    postLike: async(req, res) => {
+        res.status(200).send({
+            error: false,
+            result
+        })
+    }
 }

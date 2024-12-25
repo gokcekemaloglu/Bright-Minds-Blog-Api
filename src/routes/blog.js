@@ -14,6 +14,8 @@ router.route("/:id")
     .put(blog.update)
     .patch(blog.update)
     .delete(blog.delete)
+router.get("/:id/getLike", blog.getLike)
+router.post("/:id/postLike", blog.postLike)
 /* ------------------------------------------------------- */
 // Exports:
 module.exports = router
