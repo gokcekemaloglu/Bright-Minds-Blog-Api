@@ -108,16 +108,30 @@ module.exports = {
         })
     },
     getLike: async(req, res) => {
+        const result = await Blog.findOne({_id: req.params.id})
+        console.log(result.likes);
         
         res.status(200).send({
             error: false,
-            result
+            likes: result.likes
         })
     },
+    //??
     postLike: async(req, res) => {
+        const result = await Blog.findOne({_id: req.params.id})
+        let likes = result?.likes || []
+        // console.log(likes);
+        if (likes.includes(req.user._id)) {
+            likes = result.likes.filter((id) => id !== req.user._id)            
+        } else {
+            result.likes.push(req.user._id)
+        }
+        console.log(likes);
+        
         res.status(200).send({
             error: false,
-            result
+            likes,
+            new: await Blog.findOne({_id: req.params.id})
         })
     }
 }
