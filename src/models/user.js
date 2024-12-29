@@ -88,7 +88,7 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.pre(["save", "updateOne"], function(next) {
     // console.log("Pre-save run!")
-    // console.log(this)
+    console.log(this)
     
     const data = this?._update ?? this
 

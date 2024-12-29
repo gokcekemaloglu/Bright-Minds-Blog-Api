@@ -58,8 +58,21 @@ const BlogSchema = new mongoose.Schema({
     },
 }, {
     collection: "blogs",
-    timestamps: true
+    timestamps: true,
+    // toJSON: { virtuals: true },
+    // toObject: { virtuals: true },
 })
 
-module.exports = mongoose.model("Blog", BlogSchema)
+// blogSchema.methods.incrementVisitors = async function () {
+//     this.countOfVisitors += 1;
+//     await this.save();
+// };
+  
+// blogSchema.virtual("countInfo").get(function () {
+//     return {
+//       likesCount: this.likes.length,
+//       commentsCount: this.comments.length,
+//     };
+// });
 
+module.exports = mongoose.model("Blog", BlogSchema)

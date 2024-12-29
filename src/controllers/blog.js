@@ -52,6 +52,8 @@ module.exports = {
             #swagger.summary = "Read Blog"
         */
         const result = await Blog.findOne({_id: req.params.id}).populate(["userId", "categoryId"])
+        result.countOfVisitors += 1
+        result.save()
         res.status(200).send({
             error: false,
             result
@@ -69,19 +71,19 @@ module.exports = {
                 }
             }
         */
-        const blogData = await Blog.findOne({_id: req.params.id}).populate("userId")
-        // console.log(blogData.userId._id);
+        const blogData = await Blog.findOne({_id: req.params.id}) //.populate("userId")
+        console.log(blogData);
         // console.log(req.user);
         //?? id neden olmadı?
        
-        if (blogData.userId.username !== req.user.username) {
+        if (blogData.userId.toString() != req.user._id) {
             res.errorStatusCode = 401;
             throw new Error("You cannot update someone else's blog post")
         }
-        const result = await Blog.updateOne({_id: req.params.id}, req.body, {runValidators: true})
+        // const result = await Blog.updateOne({_id: req.params.id}, req.body, {runValidators: true})
         res.status(202).send({
             error: false,
-            result,
+            // result,
             new: await Blog.findOne({_id: req.params.id}) //.populate(["userId", "categoryId"])
         })
     },
@@ -119,19 +121,29 @@ module.exports = {
     //??
     postLike: async(req, res) => {
         const result = await Blog.findOne({_id: req.params.id})
-        let likes = result?.likes || []
-        // console.log(likes);
-        if (likes.includes(req.user._id)) {
-            likes = result.likes.filter((id) => id !== req.user._id)            
-        } else {
-            result.likes.push(req.user._id)
-        }
-        console.log(likes);
+        console.log(result);
         
+        let likes = result?.likes.map((id)=>id.toString()) || []
+        const userId = req.user._id.toString()
+        
+        console.log(likes);
+        if (likes.includes(userId)) {
+            console.log("hello");
+            
+            likes = likes.filter((id) => id !== userId)            
+            console.log(likes);
+        } else {
+            likes.push(userId)
+        }
+        
+        result.likes = likes
+        await result.save()
         res.status(200).send({
             error: false,
-            likes,
-            new: await Blog.findOne({_id: req.params.id})
+            result,
         })
+    },
+    comments:  async( req, res) => {
+
     }
 }
