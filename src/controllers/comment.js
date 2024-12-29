@@ -67,9 +67,21 @@ module.exports = {
                 }
             }
         */
+        const commentData = await Comment.findOne({_id: req.params.id})
+        console.log(commentData);
+        // console.log(req.user);
+        
+        if (commentData.userId.toString() != req.user._id.toString()) {
+            res.errorStatusCode = 401;
+            throw new Error("You cannot update someone else's comments")
+        }
+        const result = await Comment.updateOne({_id: req.params.id}, req.body, {runValidators: true})
+        // console.log(result);       
+
         res.status(202).send({
             error: false,
-            result
+            result,
+            new: await Comment.findOne({_id: req.params.id})
         })
     },
     delete: async(req, res) => {
@@ -77,42 +89,53 @@ module.exports = {
             #swagger.tags = ["Comments"]
             #swagger.summary = "Delete Comment"
         */
-        res.status(204).send({
-            error: false,
+        const commentData = await Comment.findOne({_id: req.params.id}).populate("userId")
+        console.log(commentData);
+        console.log(req.user);
+            
+        if (commentData.userId.username != req.user.username) {
+            res.errorStatusCode = 401;
+            throw new Error("You cannot delete someone else's comments")
+        }
+        const result = await Comment.deleteOne({_id: req.params.id})
+        res.status(result.deletedCount ? 204 : 404).send({
+            error: !result.deletedCount,
+            message: "Your comment deleted successfully",
             result
         })
     },
-    // getLike: async(req, res) => {
-    //     const result = await Comment.findOne({_id: req.params.id})
-    //     console.log(result.likes);
+    getLike: async(req, res) => {
+        const result = await Comment.findOne({_id: req.params.id})
+        console.log(result.likes);
             
-    //     res.status(200).send({
-    //         error: false,
-    //         likes: result.likes
-    //     })
-    // },
-    // postLike: async(req, res) => {
-    //     const result = await Comment.findOne({_id: req.params.id})
-    //     console.log(result);
+        res.status(200).send({
+            error: false,
+            likes: result.likes
+        })
+    },
+    postLike: async(req, res) => {
+        const result = await Comment.findOne({_id: req.params.id})
+        console.log(result);
             
-    //     let likes = result?.likes.map((id)=>id.toString()) || []
-    //     const userId = req.user._id.toString()
+        let likes = result?.likes.map((id)=>id.toString()) || []
+        const userId = req.user._id.toString()
             
-    //     console.log(likes);
-    //     if (likes.includes(userId)) {
-    //         console.log("hello");
+        console.log(likes);
+        console.log(userId);
+        if (likes.includes(userId)) {
+            console.log("hello");
                 
-    //         likes = likes.filter((id) => id !== userId)            
-    //         console.log(likes);
-    //     } else {
-    //         likes.push(userId)
-    //     }
+            likes = likes.filter((id) => id !== userId)            
+            console.log(likes);
+        } else {
+            likes.push(userId)
+        }
             
-    //     result.likes = likes
-    //     await result.save()
-    //     res.status(200).send({
-    //         error: false,
-    //         result,
-    //     })
-    // },
+        result.likes = likes
+        await result.save()
+        res.status(200).send({
+            error: false,
+            result,
+        })
+    },
 }

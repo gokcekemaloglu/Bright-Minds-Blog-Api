@@ -80,10 +80,10 @@ module.exports = {
             res.errorStatusCode = 401;
             throw new Error("You cannot update someone else's blog post")
         }
-        // const result = await Blog.updateOne({_id: req.params.id}, req.body, {runValidators: true})
+        const result = await Blog.updateOne({_id: req.params.id}, req.body, {runValidators: true})
         res.status(202).send({
             error: false,
-            // result,
+            result,
             new: await Blog.findOne({_id: req.params.id}) //.populate(["userId", "categoryId"])
         })
     },
@@ -144,6 +144,12 @@ module.exports = {
         })
     },
     comments:  async( req, res) => {
-
+        const result = await Blog.findOne({_id: req.params.id})
+        console.log(result.comments);
+        
+        res.send({
+            error: false,
+            // result
+        })
     }
 }
