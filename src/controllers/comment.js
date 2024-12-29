@@ -38,12 +38,13 @@ module.exports = {
             }
         */
         // console.log("Useer be canim-->", req.user)
-        const blogData = await Blog.findById({_id: req.body.blogId})
-        
-        let comments = blogData?.comments
-        
+                
         req.body.userId = req.user._id
         const result = await Comment.create(req.body)
+        
+        // Pushing the commentId to the comments array of the Blog model
+        const blogData = await Blog.findById({_id: req.body.blogId})
+        let comments = blogData?.comments
         comments.push(result._id)
         await blogData.save()
         console.log("blogData-->", blogData.comments);

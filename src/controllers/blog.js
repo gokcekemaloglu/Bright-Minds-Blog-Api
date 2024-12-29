@@ -144,12 +144,12 @@ module.exports = {
         })
     },
     comments:  async( req, res) => {
-        const result = await Blog.findOne({_id: req.params.id})
-        console.log(result.comments);
-        
+        const blogData = await Blog.findOne({_id: req.params.id})
+        console.log(blogData);
+        const result = blogData.comments
         res.send({
             error: false,
-            // result
+            result
         })
     }
 }
