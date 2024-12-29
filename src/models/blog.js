@@ -1,6 +1,15 @@
 "use strict"
 
 const {mongoose} = require("../configs/dbConnection")
+/* ----------------------------------------
+{
+    "categoryId": "676aa56034b3e2154d72694d",
+    "title": "Mavis test title 3",
+    "content": "Mavis is a lovely bird test content 3",
+    "image": "image-3",
+    "isPublish": true
+}
+-------------------------------------*/
 
 const BlogSchema = new mongoose.Schema({
     userId: {
