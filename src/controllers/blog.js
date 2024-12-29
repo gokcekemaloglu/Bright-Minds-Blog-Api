@@ -37,7 +37,7 @@ module.exports = {
             }
         */
         // Set userId from logged in user
-        console.log(req.user);
+        // console.log(req.user);
         
         req.body.userId = req.user._id
         const result = await Blog.create(req.body)
@@ -72,7 +72,7 @@ module.exports = {
             }
         */
         const blogData = await Blog.findOne({_id: req.params.id}) //.populate("userId")
-        console.log(blogData);
+        // console.log(blogData);
         // console.log(req.user);
         //?? id neden olmadı?
        
@@ -111,7 +111,7 @@ module.exports = {
     },
     getLike: async(req, res) => {
         const result = await Blog.findOne({_id: req.params.id})
-        console.log(result.likes);
+        // console.log(result.likes);
         
         res.status(200).send({
             error: false,
@@ -121,14 +121,14 @@ module.exports = {
     //??
     postLike: async(req, res) => {
         const result = await Blog.findOne({_id: req.params.id})
-        console.log(result);
+        // console.log(result);
         
         let likes = result?.likes.map((id)=>id.toString()) || []
         const userId = req.user._id.toString()
         
-        console.log(likes);
+        // console.log(likes);
         if (likes.includes(userId)) {
-            console.log("hello");
+            // console.log("hello");
             
             likes = likes.filter((id) => id !== userId)            
             console.log(likes);
@@ -145,7 +145,7 @@ module.exports = {
     },
     comments:  async( req, res) => {
         const blogData = await Blog.findOne({_id: req.params.id})
-        console.log(blogData);
+        // console.log(blogData);
         const result = blogData.comments
         res.send({
             error: false,

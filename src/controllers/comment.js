@@ -47,7 +47,7 @@ module.exports = {
         let comments = blogData?.comments
         comments.push(result._id)
         await blogData.save()
-        console.log("blogData-->", blogData.comments);
+        // console.log("blogData-->", blogData.comments);
 
         res.status(201).send({
             error: false,
@@ -78,7 +78,7 @@ module.exports = {
             }
         */
         const commentData = await Comment.findOne({_id: req.params.id})
-        console.log(commentData);
+        // console.log(commentData);
         // console.log(req.user);
         
         if (commentData.userId.toString() != req.user._id.toString()) {
@@ -100,8 +100,8 @@ module.exports = {
             #swagger.summary = "Delete Comment"
         */
         const commentData = await Comment.findOne({_id: req.params.id}).populate("userId")
-        console.log(commentData);
-        console.log(req.user);
+        // console.log(commentData);
+        // console.log(req.user);
             
         if (commentData.userId.username != req.user.username) {
             res.errorStatusCode = 401;
@@ -116,7 +116,7 @@ module.exports = {
     },
     getLike: async(req, res) => {
         const result = await Comment.findOne({_id: req.params.id})
-        console.log(result.likes);
+        // console.log(result.likes);
             
         res.status(200).send({
             error: false,
@@ -125,18 +125,18 @@ module.exports = {
     },
     postLike: async(req, res) => {
         const result = await Comment.findOne({_id: req.params.id})
-        console.log(result);
+        // console.log(result);
             
         let likes = result?.likes.map((id)=>id.toString()) || []
         const userId = req.user._id.toString()
             
-        console.log(likes);
-        console.log(userId);
+        // console.log(likes);
+        // console.log(userId);
         if (likes.includes(userId)) {
-            console.log("hello");
+            // console.log("hello");
                 
             likes = likes.filter((id) => id !== userId)            
-            console.log(likes);
+            // console.log(likes);
         } else {
             likes.push(userId)
         }
