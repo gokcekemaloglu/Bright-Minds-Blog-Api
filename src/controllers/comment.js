@@ -1,5 +1,6 @@
 "use strict"
 
+const Blog = require("../models/blog")
 const Comment = require("../models/comment")
 
 module.exports = {
@@ -36,9 +37,17 @@ module.exports = {
                 }
             }
         */
-        console.log("Useer be canim-->", req.user)
+        // console.log("Useer be canim-->", req.user)
+        const blogData = await Blog.findById({_id: req.body.blogId})
+        
+        let comments = blogData?.comments
+        
         req.body.userId = req.user._id
         const result = await Comment.create(req.body)
+        comments.push(result._id)
+        await blogData.save()
+        console.log("blogData-->", blogData.comments);
+
         res.status(201).send({
             error: false,
             result
