@@ -49,9 +49,7 @@ module.exports = {
             })
         }
 
-        // JWT
-
-        
+        // JWT        
         // AccessToken
         const accessData = {
             _id: user._id,

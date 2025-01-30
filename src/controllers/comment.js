@@ -115,6 +115,10 @@ module.exports = {
         })
     },
     getLike: async(req, res) => {
+        /* 
+            #swagger.tags = ["Comments"]
+            #swagger.summary = "Get Like Info"
+        */
         const result = await Comment.findOne({_id: req.params.id})
         // console.log(result.likes);
             
@@ -124,6 +128,10 @@ module.exports = {
         })
     },
     postLike: async(req, res) => {
+        /* 
+            #swagger.tags = ["Comments"]
+            #swagger.summary = "Add/Remove Like"
+        */
         const result = await Comment.findOne({_id: req.params.id})
         // console.log(result);
             

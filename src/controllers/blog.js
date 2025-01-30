@@ -17,11 +17,11 @@ module.exports = {
                 </ul>
             `
         */
-        const result = await res.getModelList(Blog, {}, ["userId", "categoryId"])
+        const data = await res.getModelList(Blog, {}, ["userId", "categoryId"])
         res.status(200).send({
             error: false,
             details: await res.getModelListDetails(Blog),
-            result
+            data
         })
     },
     create: async(req, res) => {
@@ -49,7 +49,7 @@ module.exports = {
     read: async(req, res) => {
         /*
             #swagger.tags = ["Blogs"]
-            #swagger.summary = "Read Blog"
+            #swagger.summary = "Get Single Blog"
         */
         const result = await Blog.findOne({_id: req.params.id}).populate(["userId", "categoryId"])
         result.countOfVisitors += 1
@@ -110,6 +110,10 @@ module.exports = {
         })
     },
     getLike: async(req, res) => {
+        /* 
+            #swagger.tags = ["Blogs"]
+            #swagger.summary = "Get Like Info"
+        */
         const result = await Blog.findOne({_id: req.params.id})
         // console.log(result.likes);
         
@@ -120,6 +124,10 @@ module.exports = {
     },
     //??
     postLike: async(req, res) => {
+        /* 
+            #swagger.tags = ["Blogs"]
+            #swagger.summary = "Add/Remove Like"
+        */
         const result = await Blog.findOne({_id: req.params.id})
         // console.log(result);
         
@@ -128,8 +136,7 @@ module.exports = {
         
         // console.log(likes);
         if (likes.includes(userId)) {
-            // console.log("hello");
-            
+            // console.log("hello");            
             likes = likes.filter((id) => id !== userId)            
             console.log(likes);
         } else {
@@ -143,13 +150,17 @@ module.exports = {
             result,
         })
     },
-    comments:  async( req, res) => {
-        const blogData = await Blog.findOne({_id: req.params.id})
-        // console.log(blogData);
-        const result = blogData.comments
-        res.send({
-            error: false,
-            result
-        })
-    }
+    // comments:  async( req, res) => {
+    //     /* 
+    //         #swagger.tags = ["Blogs"]
+    //         #swagger.summary = "Number of Comments"
+    //     */
+    //     const blogData = await Blog.findOne({_id: req.params.id})
+    //     // console.log(blogData);
+    //     const result = blogData.comments
+    //     res.send({
+    //         error: false,
+    //         result
+    //     })
+    // }
 }

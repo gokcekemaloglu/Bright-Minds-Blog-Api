@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema({
     username: {
         type: String,
         trim: true,
-        required: true,
+        required: [true, "Username is required"],
         unique: true,
         index: true
     },
@@ -41,13 +41,13 @@ const UserSchema = new mongoose.Schema({
     firstName: {
         type: String,
         trim: true,
-        required: true,
+        required: [true, "First name is required"],
     },
 
     lastName: {
         type: String,
         trim: true,
-        required: true,
+        required: [true, "Last name is required"],
     },
 
     image: {

@@ -16,7 +16,7 @@ router.route("/:id")
     .delete(blog.delete)
 router.get("/:id/getLike", blog.getLike)
 router.post("/:id/postLike", blog.postLike)
-router.get("/:id/comments", blog.comments)
+// router.get("/:id/comments", blog.comments)
 /* ------------------------------------------------------- */
 // Exports:
 module.exports = router
