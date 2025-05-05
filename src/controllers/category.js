@@ -17,11 +17,13 @@ module.exports = {
                 </ul>
             `
         */
-        const data = await res.getModelList(Category)
+        // const data = await res.getModelList(Category)
+        const data = await Category.find()
+        // console.log(data);
 
         res.status(200).send({
             error: false,
-            details: await res.getModelListDetails(Category),
+            // details: await res.getModelListDetails(Category),
             data
         })
     },
