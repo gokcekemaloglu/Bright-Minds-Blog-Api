@@ -16,6 +16,7 @@ router.route("/:id")
     .delete(comment.delete)
 router.get("/:id/getLike", comment.getLike)
 router.post("/:id/postLike", comment.postLike)
+router.route("/blog/:blogId").get(comment.getSingleBlogComments);
 /* ------------------------------------------------------- */
 // Exports:
 module.exports = router

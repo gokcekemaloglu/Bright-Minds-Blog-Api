@@ -17,7 +17,7 @@ module.exports = {
                 </ul>
             `
         */
-        const data = await res.getModelList(Blog, {}, ["userId", "categoryId"])
+        const data = await res.getModelList(Blog, {}, ["userId", "categoryId", "comments"])
         res.status(200).send({
             error: false,
             details: await res.getModelListDetails(Blog),
@@ -51,16 +51,16 @@ module.exports = {
             #swagger.tags = ["Blogs"]
             #swagger.summary = "Get Single Blog"
         */
-        const result = await Blog.findOne({_id: req.params.id}).populate(["userId", "categoryId"])
-        result.countOfVisitors += 1
-        result.save()
+        const data = await Blog.findOne({_id: req.params.id}).populate(["userId", "categoryId"])
+        data.countOfVisitors += 1
+        data.save()
         res.status(200).send({
             error: false,
-            result
+            data
         })
     },
     update: async(req, res) => {
-        /* 
+        /*
             #swagger.tags = ["Blogs"]
             #swagger.summary = "Update Blog"
             #swagger.parameters['body'] = {
@@ -138,7 +138,7 @@ module.exports = {
         if (likes.includes(userId)) {
             // console.log("hello");            
             likes = likes.filter((id) => id !== userId)            
-            console.log(likes);
+            // console.log(likes);
         } else {
             likes.push(userId)
         }
@@ -150,17 +150,5 @@ module.exports = {
             result,
         })
     },
-    // comments:  async( req, res) => {
-    //     /* 
-    //         #swagger.tags = ["Blogs"]
-    //         #swagger.summary = "Number of Comments"
-    //     */
-    //     const blogData = await Blog.findOne({_id: req.params.id})
-    //     // console.log(blogData);
-    //     const result = blogData.comments
-    //     res.send({
-    //         error: false,
-    //         result
-    //     })
-    // }
+
 }

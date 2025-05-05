@@ -59,10 +59,10 @@ module.exports = {
             #swagger.tags = ["Comments"]
             #swagger.summary = "Read Comment"
         */
-        const result = await Comment.findOne({_id: req.params.id}).populate(["userId", "blogId"])
+        const data = await Comment.findOne({_id: req.params.id}).populate(["userId", "blogId"])
         res.status(200).send({
             error: false,
-            result
+            data
         })
     },
     update: async(req, res) => {
@@ -100,13 +100,21 @@ module.exports = {
             #swagger.summary = "Delete Comment"
         */
         const commentData = await Comment.findOne({_id: req.params.id}).populate("userId")
-        // console.log(commentData);
+        // console.log("commentData", commentData);
         // console.log(req.user);
             
         if (commentData.userId.username != req.user.username) {
             res.errorStatusCode = 401;
             throw new Error("You cannot delete someone else's comments")
         }
+
+        const blogData = await Blog.findOne({_id: commentData.blogId})
+        // console.log("blogData", blogData);
+        
+        blogData.comments = blogData.comments.filter((id) => id.toString() !== commentData._id.toString())
+
+        await blogData.save()
+
         const result = await Comment.deleteOne({_id: req.params.id})
         res.status(result.deletedCount ? 204 : 404).send({
             error: !result.deletedCount,
@@ -133,16 +141,12 @@ module.exports = {
             #swagger.summary = "Add/Remove Like"
         */
         const result = await Comment.findOne({_id: req.params.id})
-        // console.log(result);
-            
+        // console.log(result);            
         let likes = result?.likes.map((id)=>id.toString()) || []
-        const userId = req.user._id.toString()
-            
+        const userId = req.user._id.toString()            
         // console.log(likes);
         // console.log(userId);
         if (likes.includes(userId)) {
-            // console.log("hello");
-                
             likes = likes.filter((id) => id !== userId)            
             // console.log(likes);
         } else {
@@ -156,4 +160,30 @@ module.exports = {
             result,
         })
     },
+    getSingleBlogComments: async (req, res) => {
+    /*
+      #swagger.tags = ["Comments"]
+      #swagger.summary = "Get Single Blog Comments"
+      #swagger.description = "Fetch all comments/reviews for a specific blog."
+      #swagger.parameters['blogId'] = {
+          in: 'path',
+          required: true,
+          description: 'ID of the blog to fetch comments for.',
+          type: 'string',
+        }
+    */
+    const { blogId } = req.params;
+    // console.log(blogId);    
+
+    const data = await Comment.find({ blogId })
+    .populate([
+      { path: "userId", select: "_id firstName lastName" }
+    ]);
+
+    res.status(200).send({
+      error: false,
+    //   message: req.t(translations.feedback.getSingleTherapistSuccess),
+      data,
+    });
+  },
 }
