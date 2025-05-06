@@ -157,9 +157,8 @@ module.exports = {
           "firstName",
           "lastName",
           "image",
-          "phone",
-          "address",
-          "profession"
+          "city",
+          "bio",
         );
     
         const data = await User.updateOne({ _id: req.params.id }, filteredObj, {
@@ -169,8 +168,8 @@ module.exports = {
         res.status(201).send({
           error: !data.modifiedCount,
           message: data.modifiedCount
-            ? req.t(translations.user.updateSuccess)
-            : req.t(translations.user.updateFailed),
+            ? "User updated successfully"
+            : "User update failed",
           data,
           new: await User.findOne({ _id: req.params.id }),
         });
