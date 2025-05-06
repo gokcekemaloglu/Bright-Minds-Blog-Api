@@ -1,5 +1,6 @@
 "use strict"
 
+const filterObj = require("../helpers/allowedFields")
 const passwordEncrypt = require("../helpers/passwordEncrypt")
 const Token = require("../models/token")
 const User = require("../models/user")
@@ -132,5 +133,46 @@ module.exports = {
             error: !data.deletedCount,
             data
         })
+    },
+    updateMe: async (req, res) => {
+        /*
+            #swagger.tags = ["Users"]
+            #swagger.summary = "Update User"
+            #swagger.parameters['body'] = {
+                in: 'body',
+                required: true,
+                schema: {
+                    "firstName": "test",
+                    "lastName": "test",
+                    "image": "test",
+                    "phone": "test",
+                    "address": "test",
+                    "profession": "test"
+                }
+            }
+        */
+    
+        const filteredObj = filterObj(
+          req.body,
+          "firstName",
+          "lastName",
+          "image",
+          "phone",
+          "address",
+          "profession"
+        );
+    
+        const data = await User.updateOne({ _id: req.params.id }, filteredObj, {
+          runValidators: true,
+        });
+    
+        res.status(201).send({
+          error: !data.modifiedCount,
+          message: data.modifiedCount
+            ? req.t(translations.user.updateSuccess)
+            : req.t(translations.user.updateFailed),
+          data,
+          new: await User.findOne({ _id: req.params.id }),
+        });
     },
 }
