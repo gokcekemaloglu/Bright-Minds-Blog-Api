@@ -145,9 +145,8 @@ module.exports = {
                     "firstName": "test",
                     "lastName": "test",
                     "image": "test",
-                    "phone": "test",
-                    "address": "test",
-                    "profession": "test"
+                    "city": "test",
+                    "bio": "test",
                 }
             }
         */
@@ -164,6 +163,8 @@ module.exports = {
         const data = await User.updateOne({ _id: req.params.id }, filteredObj, {
           runValidators: true,
         });
+        console.log(data);
+        
     
         res.status(201).send({
           error: !data.modifiedCount,

@@ -12,5 +12,6 @@ router.route("/:id")
     .put(user.update)
     .patch(user.update)
     .delete(user.delete)
+router.route("/:id/updateMe").patch(user.updateMe)
 
 module.exports = router;
