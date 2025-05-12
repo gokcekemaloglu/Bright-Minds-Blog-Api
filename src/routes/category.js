@@ -6,6 +6,7 @@ const router = require("express").Router()
 
 const category = require("../controllers/category")
 
+router.route("/all").get(category.listCategories) // Without pagination
 router.route("/")
     .get(category.list)
     .post(category.create)
@@ -14,6 +15,8 @@ router.route("/:id")
     .put(category.update)
     .patch(category.update)
     .delete(category.delete)
+
+
 /* ------------------------------------------------------- */
 // Exports:
 module.exports = router

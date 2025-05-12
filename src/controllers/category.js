@@ -17,13 +17,13 @@ module.exports = {
                 </ul>
             `
         */
-        // const data = await res.getModelList(Category)
-        const data = await Category.find()
+        const data = await res.getModelList(Category)
+        // const data = await Category.find()
         // console.log(data);
 
         res.status(200).send({
             error: false,
-            // details: await res.getModelListDetails(Category),
+            details: await res.getModelListDetails(Category),
             data
         })
     },
@@ -90,6 +90,26 @@ module.exports = {
 
         res.status(data.deletedCount ? 204 : 404).send({
             error: !data.deletedCount,
+            data
+        })
+    },
+    listCategories: async (req, res) => {
+        /*
+            #swagger.tags = ["Category"]
+            #swagger.summary = "List All Categories (No Pagination)"
+            #swagger.description = "Returns all categories without pagination for dropdown menus and selects"
+        */
+        // const data = await res.getModelList(Category)
+        const data = await Category.find().sort({ name: 1 }) // Sort alphabetically by name
+        // console.log(data);
+        let details = {
+            totalRecords: data.length
+        }
+
+        res.status(200).send({
+            error: false,
+            // details: await res.getModelListDetails(Category),
+            details,
             data
         })
     },
