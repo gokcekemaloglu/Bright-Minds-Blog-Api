@@ -13,5 +13,6 @@ router.route("/:id")
     .patch(user.update)
     .delete(user.delete)
 router.route("/:id/updateMe").patch(user.updateMe)
+router.route("/:id/changeMyPassword").patch(user.changeMyPassword);
 
 module.exports = router;

@@ -97,7 +97,7 @@ UserSchema.pre(["save", "updateOne"], function(next) {
     const isEmailValidated = data.email ? /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email) : true
 
     if (!isEmailValidated) {
-        next(new Error("Email is not validated"))
+        next(new Error("Email is not validated, please write a proper email!"))
     }
 
     // Password Validation Control
