@@ -183,23 +183,22 @@ module.exports = {
   },
   changeMyPassword: async (req, res) => {
     /* 
-        #swagger.tags = ["Users"]
-        #swagger.summary = "Update User"
-        #swagger.parameters['body'] = {
-            in: 'body',
-            required: true,
-            schema: {
-                "currentPassword": "***",
-                "newPassword": "***",
-                "retypePassword": "***",
-            }
+      #swagger.tags = ["Users"]
+      #swagger.summary = "Update User"
+      #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+          "currentPassword": "***",
+          "newPassword": "***",
+          "retypePassword": "***",
         }
+      }
     */
     const { currentPassword, newPassword, retypePassword } = req.body;
 
     console.log(req.user);
     
-
     if (!currentPassword || !newPassword || !retypePassword) {
       throw new CustomError("Password filed required");
     }
@@ -211,11 +210,11 @@ module.exports = {
     }
 
     if (req.user?.password !== passwordEncrypt(currentPassword)) {
-        throw new CustomError("Your current password is not match! Please write your existing password!")
+      throw new CustomError("Your current password is not match! Please write your existing password!")
     }
 
     if (newPassword !== retypePassword) {
-        throw new CustomError("Passwords don't match!")
+      throw new CustomError("Passwords don't match!")
     }
 
     user.password = newPassword
