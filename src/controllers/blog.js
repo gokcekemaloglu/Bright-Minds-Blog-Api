@@ -193,23 +193,19 @@ module.exports = {
     /*
       #swagger.tags = ["Blogs"]
       #swagger.summary = "Get Published Blogs"
-      #swagger.description = "Fetch published blogs for a specific user."
-      #swagger.parameters['userId'] = {
+      #swagger.description = "Fetch published blogs."
+      #swagger.parameters['isPublish'] = {
           in: 'path',
           required: true,
           description: 'ID of the user to fetch blogs for.',
           type: 'string',
         }
     */
-    // console.log(req.user);
-    // const userId = req.user?._id.toString();
-    // console.log(userId);
 
     const publishedBlogs = await res.getModelList(Blog, {isPublish: true}, 
       ["categoryId", "userId"]
     );
     // console.log(publishedBlogs);
-    // console.log(data);
 
     res.status(200).send({
       error: false,
