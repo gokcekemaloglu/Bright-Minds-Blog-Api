@@ -6,8 +6,6 @@ const router = require("express").Router()
 
 const blog = require("../controllers/blog")
 
-// router.route("/userBlogs").get(blog.getMyBlogsData);
-// router.route("/publishedBlogs").get(blog.getPublishedBlogsData);
 router.route("/")
     .get(blog.list)
     .post(blog.create)
@@ -16,6 +14,9 @@ router.route("/:id")
     .put(blog.update)
     .patch(blog.update)
     .delete(blog.delete)
+
+router.get("/:userId/stats", blog.stats)
+
 router.get("/:id/getLike", blog.getLike)
 router.post("/:id/postLike", blog.postLike)
 // router.get("/:id/comments", blog.comments)

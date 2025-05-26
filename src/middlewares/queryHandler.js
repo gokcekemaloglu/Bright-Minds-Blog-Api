@@ -62,9 +62,9 @@ module.exports = (req, res, next) => {
             skip,
             limit,
             page,
-            totolRecords: count,
+            totalRecords: count,
             pages: count <= limit ? false : {
-                previos: (page > 1 ? page - 1 : false),
+                prev: (page > 1 ? page - 1 : false),
                 current: page,
                 next: page < Math.ceil(count / limit) ? page + 1 : false,
                 total: Math.ceil(count / limit)

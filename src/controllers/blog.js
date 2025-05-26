@@ -1,6 +1,7 @@
 "use strict";
 
 const Blog = require("../models/blog");
+const mongoose = require("mongoose");
 
 module.exports = {
   list: async (req, res) => {
@@ -22,12 +23,53 @@ module.exports = {
       "categoryId",
       "comments",
     ]);
+    const details = await res.getModelListDetails(Blog);
+
     res.status(200).send({
       error: false,
-      details: await res.getModelListDetails(Blog),
-      data,
+      details,
+      data
     });
   },
+
+  stats: async (req, res) => {
+
+    const stats = {
+      totalVisitors: 0,
+      totalLikes: 0,
+      totalComments: 0,
+      totalRecords: 0,
+      published: 0,
+      draft: 0,
+    }
+
+    const userId = new mongoose.Types.ObjectId(String(req.params.userId));
+
+    const totalRecords = await Blog.countDocuments({ userId });
+    const publishedCount = await Blog.countDocuments({ userId, isPublish: true });
+
+    stats.totalRecords = totalRecords;
+    stats.published = publishedCount;
+    stats.draft = totalRecords - publishedCount;
+
+    const result = await Blog.aggregate([
+      { $match: { userId } },
+      {
+        $group: {
+          _id: null,
+          totalVisitors: { $sum: "$countOfVisitors" },
+          totalLikes: { $sum: { $size: { $ifNull: ["$likes", []] } } },
+          totalComments: { $sum: { $size: { $ifNull: ["$comments", []] } } },
+        }
+      }
+    ]);
+    stats.totalVisitors = result[0]?.totalVisitors || 0;
+    stats.totalLikes = result[0]?.totalLikes || 0;
+    stats.totalComments = result[0]?.totalComments || 0;
+
+    res.status(200).send({ ...stats });
+  },
+
   create: async (req, res) => {
     /* 
             #swagger.tags = ["Blogs"]
@@ -161,56 +203,5 @@ module.exports = {
       result,
     });
   },
-  // User's own Blogs
-  getMyBlogsData: async (req, res) => {
-    /*
-      #swagger.tags = ["Blogs"]
-      #swagger.summary = "Get Single User Blogs"
-      #swagger.description = "Fetch all blogs for a specific user."
-      #swagger.parameters['userId'] = {
-          in: 'path',
-          required: true,
-          description: 'ID of the user to fetch blogs for.',
-          type: 'string',
-        }
-    */
-    // console.log(req.user);
-    const userId = req.user?._id.toString();
-    // console.log(userId);
 
-    const data = await res.getModelList(Blog, {userId}, [
-      "categoryId",
-    ]);
-    // console.log(data);
-
-    res.status(200).send({
-      error: false,
-      details: await res.getModelListDetails(Blog, {userId}),
-      data,
-    });
-  },
-  getPublishedBlogsData: async (req, res) => {
-    /*
-      #swagger.tags = ["Blogs"]
-      #swagger.summary = "Get Published Blogs"
-      #swagger.description = "Fetch published blogs."
-      #swagger.parameters['isPublish'] = {
-          in: 'path',
-          required: true,
-          description: 'ID of the user to fetch blogs for.',
-          type: 'string',
-        }
-    */
-
-    const publishedBlogs = await res.getModelList(Blog, {isPublish: true}, 
-      ["categoryId", "userId"]
-    );
-    // console.log(publishedBlogs);
-
-    res.status(200).send({
-      error: false,
-      details: await res.getModelListDetails(Blog, {isPublish: true}),
-      data: publishedBlogs,
-    });
-  },
 };
