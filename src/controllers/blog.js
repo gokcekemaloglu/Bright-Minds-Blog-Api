@@ -1,6 +1,7 @@
 "use strict";
 
 const Blog = require("../models/blog");
+const {mongoose} = require("../configs/dbConnection")
 
 module.exports = {
   list: async (req, res) => {
@@ -22,11 +23,56 @@ module.exports = {
       "categoryId",
       "comments",
     ]);
+    const details = await res.getModelListDetails(Blog)
     res.status(200).send({
       error: false,
-      details: await res.getModelListDetails(Blog),
+      details,
       data,
     });
+  },
+
+  
+  // This function summarizes blog statistics for a specific user. It calculates total number of blog posts, published and draft counts,total number of visitors, likes, and comments across all posts. "countDocuments" is used to count total and published records.
+  stats: async ( req, res) => {
+    const stats = {
+      totalVisitors: 0,
+      totalLikes: 0,
+      totalComments: 0,
+      totalRecords: 0,
+      published: 0,
+      draft: 0,
+    }
+
+    const userId = new mongoose.Types.ObjectId(String(req.params.userId))
+
+    const totalRecords = await Blog.countDocuments({ userId });
+    const publishedCount = await Blog.countDocuments({ userId, isPublish: true });
+
+    stats.totalRecords = totalRecords;
+    stats.published = publishedCount;
+    stats.draft = totalRecords - publishedCount;
+    
+    // The "aggregate" method is used for more complex operations:
+    //    - "$group" collects all matched blog posts into one group.
+    //    - "$sum" and "$size" are used to count visitors, likes, and comments per post.
+    //    - "$ifNull" ensures that if "likes" or "comments" fields are null or missing, it doesn't cause errors.
+    // All calculated data is stored in the "stats" object and returned as the API response.
+    const result = await Blog.aggregate([
+      {$match: { userId }},
+      {
+        $group: {
+          _id: null,
+          totalVisitors: { $sum: "$countOfVisitors" },
+          totalLikes: {$sum: {$size: {$ifNull: ["$likes", []]}}},
+          totalComments: {$sum: {$size: {$ifNull: ["$comments", []]}}}
+        }
+      }
+    ])
+    stats.totalVisitors = result[0].totalVisitors || 0;
+    stats.totalLikes = result[0].totalLikes || 0;
+    stats.totalComments = result[0].totalComments || 0;
+    res.status(200).send({...stats});
+
   },
   create: async (req, res) => {
     /* 
